@@ -26,31 +26,72 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import {primaryColor, secondaryColor, white} from './styles';
+
+import Sites from './components/Sites';
+import Jobs from './components/Jobs';
+import Quotes from './components/Quotes';
+import Assets from './components/Assets';
+
+const Tab = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+
+const Tabs = () => (
+  <Tab.Navigator
+    initialRouteName="Sites"
+    tabBarOptions={{
+      style: {backgroundColor: primaryColor},
+      labelStyle: {color: white},
+      activeTintColor: secondaryColor,
+      inactiveTintColor: white,
+    }}>
+    <Tab.Screen
+      name="Sites"
+      component={Sites}
+      options={{
+        tabBarLabel: 'Sites',
+        tabBarIcon: ({color, size}) => (
+          <MaterialCommunityIcons name="home" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Jobs"
+      component={Jobs}
+      options={{
+        tabBarLabel: 'Jobs',
+        tabBarIcon: ({color, size}) => (
+          <MaterialCommunityIcons name="briefcase" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Quotes"
+      component={Quotes}
+      options={{
+        tabBarLabel: 'Quotes',
+        tabBarIcon: ({color, size}) => (
+          <MaterialCommunityIcons name="home" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Assets"
+      component={Assets}
+      options={{
+        tabBarLabel: 'Assets',
+        tabBarIcon: ({color, size}) => (
+          <MaterialCommunityIcons name="briefcase" color={color} size={size} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
+);
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -60,33 +101,11 @@ const App: () => Node = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <HomeStack.Navigator>
+        <HomeStack.Screen name="Tabs" component={Tabs} />
+      </HomeStack.Navigator>
+    </NavigationContainer>
   );
 };
 
